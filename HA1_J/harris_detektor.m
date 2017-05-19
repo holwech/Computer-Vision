@@ -1,0 +1,33 @@
+function  Merkmale = harris_detektor(Image, Fx, Fy) 
+% In dieser Funktion soll der Harris-Detektor implementiert werden, der
+% Merkmalspunkte aus dem Bild extrahiert
+imgdim = size(Image);
+M = zeros(2);
+W = [
+     1 2 1;
+     2 4 2;
+     1 2 1
+    ];
+thres = 100000000;
+Merkmale = zeros(imgdim(1), imgdim(2));
+for row = 2:(imgdim(1) - 1)
+    for col = 2:(imgdim(2) - 1)
+        M(:,:) = 0;
+        for col2 = -1:1
+            for row2 = -1:1
+                Ixx = power(Fx(row + row2, col + col2), 2) * W(row2 + 2, col2 + 2);
+                Iyy = power(Fy(row + row2, col + col2), 2) * W(row2 + 2, col2 + 2);
+                Ixy = Fx(row + row2, col + col2) * Fy(row + row2, col + col2) * W(row2 + 2, col2 + 2);
+                M(1,1) = M(1,1) + Ixx;
+                M(1,2) = M(1,2) + Ixy;
+                M(2,1) = M(2,1) + Ixy;
+                M(2,2) = M(2,2) + Iyy;
+            end
+        end
+        H = det(M) - 0.05 * power(trace(M), 2);
+        if H > thres
+            Merkmale(row, col) = 255;
+        end
+    end
+end
+end
