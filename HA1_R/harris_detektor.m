@@ -8,19 +8,23 @@ function  Merkmale = harris_detektor(Image, varargin)
     end
 
     % initial values 
-    segment_length=2;
+    segment_length=3;
     k=0.05;
     tau=1;
     do_plot = false;
 
     % read optional arguments
     n=1;
-    while n<=nargin
+    while n+1<=nargin
         switch varargin{n}
             case 'do_plot'
                 do_plot = varargin{n+1};
             case 'segment_length'
                 segment_length = varargin{n+1};
+                if mod(segemnt_length,2) == 0
+                    disp 'Error: segment length is an even number! we should never got here';
+                    return;
+                end
             case 'k'
                 k = varargin{n+1};
             case 'tau'
@@ -31,7 +35,7 @@ function  Merkmale = harris_detektor(Image, varargin)
         n= n+2;
     end
 
-    disp(segment_length, k, tau, do_plot);
+    disp([segment_length, k, tau, do_plot]);
 
     % allocate memory
     Merkmale = zeros(size(Image));
@@ -41,9 +45,9 @@ function  Merkmale = harris_detektor(Image, varargin)
 
     % run through image
     disp 'compute G ...'
-    y=-(segment_length-1)/2;
+    y=1+(segment_length-1)/2;
     while(y<size(Image,2)-(segment_length-1)/2)
-        x=-(segment_length-1)/2;
+        x=1+(segment_length-1)/2;
         while(x<size(Image,1)-(segment_length-1)/2)
             % Berechne die approximierte Harris Matrix G (steht fuer
             % Aenderung des Bildsegments)
@@ -54,19 +58,22 @@ function  Merkmale = harris_detektor(Image, varargin)
                     G = G + w*[Fx(x+ix,y+iy),Fy(x+ix,y+iy)]'*[Fx(x+ix,y+iy),Fy(x+ix,y+iy)];
                 end
             end
-            H = det(G)-k*(tr(G))^2;
+            H = det(G)-k*(trace(G))^2;
             if H>tau
-                Merkmale(x,y)='side';
+                % side
+                Merkmale(x,y)=1;
             elseif H<tau
-                Merkmale(x,y)='angle';
+                % angle
+                Merkmale(x,y)=2;
             else
-                Merkmale(x,y)='area';
+                % area
+                Merkmale(x,y)=3;
             end
             x=x+segment_length;
         end
         y=y+segment_length;
     end
-    disp 'computing of G finished!'
+    disp 'computation of G finished!';
     
     % plot features
     if (do_plot==true)
