@@ -1,36 +1,51 @@
 function [Fx, Fy] = sobel_xy(Image)
 % In dieser Funktion soll das Sobel-Filter implementiert werden, welches
 % ein Graustufenbild einliest und den Bildgradienten in x- sowie in
-% y-Richtung zurückgibt.
+% y-Richtung zurï¿½ckgibt.
 
 %Sobel filter in x- an y-direction
-SFx = [1 0 -1; 2 0 -2; 1 0 -1];
-SFy = [1 2 1; 0 0 0; -1 -2 -1];
-gaussianBlur = 1/16*[1 2 1; 2 4 2; 1 2 1];
+SFx = [
+       1  0 -1;
+       2  0 -2;
+       1  0 -1
+      ];
+SFy = [
+       1  2  1;
+       0  0  0;
+      -1 -2 -1
+      ];
+gaussianBlur = 1/16*[
+                     1  2  1;
+                     2  4  2;
+                     1  2  1
+                   ];
 
-Fx = zeros(size(Image,1), size(Image,2));
-Fy = zeros(size(Image,1), size(Image,2));
+imgdim = size(Image);
+Fx = zeros(imgdim(1), imgdim(2));
+Fy = zeros(imgdim(1), imgdim(2));
 
-%Convert to double to do calculations
-doubleImage = double(Image);
+% Add padding to image
+padding = floor(size(SFx, 1) / 2);
+paddedImage = double(padarray(Image, [padding padding], 'symmetric'));
+
+
 
 %Flip kernels for convolution
 SFx = rot90(SFx,2);
 SFy = rot90(SFy,2);
 
-for x = 2:size(Image,2) - 1
-    for y = 2:size(Image,1) - 1
+for x = (padding + 1):(imgdim(2) + padding)
+    for y = (padding + 1):(imgdim(1) + padding)
         accuX = 0.0;
         accuY = 0.0;
-        for k = -1:1
-            for l = -1:1
-                accuX = accuX + doubleImage(y - l, x - k)*SFx(2 - l, 2 - k)*gaussianBlur(2 - l, 2 - k);
-                accuY = accuY + doubleImage(y - l, x - k)*SFy(2 - l, 2 - k)*gaussianBlur(2 - l, 2 - k);
+        for k = -padding:padding
+            for l = -padding:padding
+                accuX = accuX + paddedImage(y - l, x - k)*SFx(2 - l, 2 - k) * gaussianBlur(2 - l, 2 - k);
+                accuY = accuY + paddedImage(y - l, x - k)*SFy(2 - l, 2 - k) * gaussianBlur(2 - l, 2 - k);
                 
             end
         end
-        Fx(y,x) = ceil(accuX);
-        Fy(y,x) = ceil(accuY);
+        Fx(y - padding,x - padding) = ceil(accuX);
+        Fy(y - padding,x - padding) = ceil(accuY);
     end
 end
-
