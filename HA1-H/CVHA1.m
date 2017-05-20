@@ -5,30 +5,25 @@
 %  Einlesen und Konvertieren von Bildern sowie Bestimmung von 
 %  Merkmalen mittels Harris-Detektor. 
 
-%  Fï¿½r die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
-%  enfernen und sicherstellen, dass alle optionalen Parameter ï¿½ber den
-%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden kï¿½nnen.
+%  Für die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
+%  enfernen und sicherstellen, dass alle optionalen Parameter über den
+%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden können.
 
 
 %% Bild laden
 Image = imread('szene.jpg');
-%tImage = imread('engine.png');
-tImage = imread('test.jpg');
-checkerImage = imread('szene.jpg');
+checkerImage = imread('checkerboard.png'); %Used for testing
 IGray = rgb_to_gray(checkerImage);
-%RIGraySegment = IGray(800:1300,800:1300);
 
 [Fx, Fy] = sobel_xy(IGray);
-mag = gradientMagnitude(Fx,Fy);
- nMag = normalize(mag);
- imshow(uint8(nMag));
 
 %% Harris-Merkmale berechnen
 %  tic;
-%  Merkmale = harris_detektor(IGray,'do_plot',true);
-%SFx = [1 0 -1; 2 0 -2; 1 0 -1];
-%SFy = [1 2 1; 0 0 0; -1 -2 -1];
-%Fx = conv2(IGray, SFx, 'same');
-%Fy = conv2(IGray, SFy, 'same');
-%[ev, H, Merkmale] = harris_detektor(IGray, Fx, Fy, 3, 0.05, 100000000000);
+k = 0.05;
+tau = 10000;
+segmenth_length = 3;
+min_distance = 10; %Minimum distance between two features
+tile_size = 11; %Divides the image in quadratic tiles, this variable describes the width/height
+N = 3; %Maximal number of features within each tile
+[Hvalues, Merkmale] = harris_detektor(IGray, Fx, Fy, segmenth_length, k, tau, 'do_plot', min_distance, tile_size, N);
 %  toc;
