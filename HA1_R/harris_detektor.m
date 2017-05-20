@@ -1,6 +1,8 @@
 function  Merkmale = harris_detektor(Image, varargin) 
     % In dieser Funktion soll der Harris-Detektor implementiert werden, der
     % Merkmalspunkte aus dem Bild extrahiert
+    
+    % check whether the picture does only contain one colour dimension
     if size(Image,3) ~= 1
         return;
     end
@@ -39,10 +41,10 @@ function  Merkmale = harris_detektor(Image, varargin)
 
     % run through image
     disp 'compute G ...'
-    y=0;
-    while(y<size(Image,2)-segment_length)
-        x=0;
-        while(x<size(Image,1)-segment_length)
+    y=-(segment_length-1)/2;
+    while(y<size(Image,2)-(segment_length-1)/2)
+        x=-(segment_length-1)/2;
+        while(x<size(Image,1)-(segment_length-1)/2)
             % Berechne die approximierte Harris Matrix G (steht fuer
             % Aenderung des Bildsegments)
             G = zeros(2,2);
@@ -54,24 +56,27 @@ function  Merkmale = harris_detektor(Image, varargin)
             end
             H = det(G)-k*(tr(G))^2;
             if H>tau
-                Merkmale(x,y)="side";
+                Merkmale(x,y)='side';
             elseif H<tau
-                Merkmale(x,y)="angle";
+                Merkmale(x,y)='angle';
             else
-                Merkmale(x,y)="area";
+                Merkmale(x,y)='area';
             end
             x=x+segment_length;
         end
         y=y+segment_length;
     end
     disp 'computing of G finished!'
-    % Plotte die Merkmale in das Bild
-    if (do_plot ==true)
+    
+    % plot features
+    if (do_plot==true)
         plot_harris(Merkmale, Image);
     end
 end
 
 function w = weight(ix,iy,segment_length)
+    % Computes the Weight, such that pixels that are closer to the the
+    % central pixel (i.e. ix and iy are small) have a higher weight
     w = 1;
 end
 
