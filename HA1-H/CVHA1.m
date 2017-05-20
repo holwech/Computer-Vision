@@ -5,9 +5,9 @@
 %  Einlesen und Konvertieren von Bildern sowie Bestimmung von 
 %  Merkmalen mittels Harris-Detektor. 
 
-%  Für die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
-%  enfernen und sicherstellen, dass alle optionalen Parameter über den
-%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden können.
+%  Fï¿½r die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
+%  enfernen und sicherstellen, dass alle optionalen Parameter ï¿½ber den
+%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden kï¿½nnen.
 
 
 %% Bild laden
