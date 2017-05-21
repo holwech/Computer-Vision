@@ -14,7 +14,6 @@
 Image = imread('szene.jpg');
 checkerImage = imread('checkerboard.png'); %Used for testing
 IGray = rgb_to_gray(checkerImage);
-
 [Fx, Fy] = sobel_xy(IGray);
 
 %% Harris-Merkmale berechnen
@@ -25,5 +24,5 @@ segmenth_length = 3;
 min_distance = 10; %Minimum distance between two features
 tile_size = 11; %Divides the image in quadratic tiles, this variable describes the width/height
 N = 3; %Maximal number of features within each tile
-[Hvalues, Merkmale] = harris_detektor(IGray, Fx, Fy, segmenth_length, k, tau, 'do_plot', min_distance, tile_size, N);
+[Merkmale] = harris_detektor(IGray, 'segmenth_length', segmenth_length, 'k', k, 'tau', tau, 'do_plot',true , 'min_distance', min_distance, 'tile_size', tile_size, 'N',  N);
 %  toc;

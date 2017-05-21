@@ -34,11 +34,11 @@ function  Merkmale = harris_detektor(Image, varargin)
         end
         n= n+2;
     end
-
-    disp([segment_length, k, tau, do_plot]);
+    fprintf('segment_length = %d, k = %d, tau = %d, do_plot = %d\n',segment_length,k,tau,do_plot);
 
     % allocate memory
     Merkmale = zeros(size(Image));
+    H = zeros(size(Image));
 
     % compute gradient
     [Fx,Fy] = sobel_xy(Image);
@@ -49,44 +49,57 @@ function  Merkmale = harris_detektor(Image, varargin)
     while(y<size(Image,2)-(segment_length-1)/2)
         x=1+(segment_length-1)/2;
         while(x<size(Image,1)-(segment_length-1)/2)
-            % Berechne die approximierte Harris Matrix G (steht fuer
-            % Aenderung des Bildsegments)
-            G = zeros(2,2);
+            % Compute the approximated Harris-Matrix for the Pixel Image(x,y)
+            G = zeros(2);
             for ix = -(segment_length-1)/2:(segment_length-1)/2
                 for iy = -(segment_length-1)/2:(segment_length-1)/2
                     w = weight(ix, iy, segment_length);
                     G = G + w*[Fx(x+ix,y+iy),Fy(x+ix,y+iy)]'*[Fx(x+ix,y+iy),Fy(x+ix,y+iy)];
                 end
             end
-            H = det(G)-k*(trace(G))^2;
-            if H>tau
-                % side
-                Merkmale(x,y)=1;
-            elseif H<tau
-                % angle
-                Merkmale(x,y)=2;
-            else
-                % area
-                Merkmale(x,y)=3;
+            H(x,y) = det(G)-k*(trace(G))^2;
+            
+            if H(x,y)<tau
+                Merkmale(x,y)=1;% Ecke
+            %elseif H(x,y)>tau
+                %Merkmale(x,y)=2;% Kante
+            %else
+                %Merkmale(x,y)=3;% Fläche
             end
-            x=x+segment_length;
+            x=x+1;
         end
-        y=y+segment_length;
+        y=y+1;
     end
     disp 'computation of G finished!';
     
     % plot features
     if (do_plot==true)
         plot_harris(Merkmale, Image);
+        
     end
 end
 
 function w = weight(ix,iy,segment_length)
     % Computes the Weight, such that pixels that are closer to the the
     % central pixel (i.e. ix and iy are small) have a higher weight
-    w = 1;
+    if (segment_length == 3)
+    switch abs(ix*iy)
+        case 0
+            w = 4;
+        case 1
+            w = 2;
+        case 2
+            w = 1;
+        otherwise
+            disp('error');
+    end
+    end
 end
 
 function plot_harris(Merkmale, Image)
+%% -------------------------------------
     % Plots the image
+    figure;
+    imshow(Merkmale);
+
 end
