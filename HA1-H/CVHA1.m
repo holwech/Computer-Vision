@@ -24,5 +24,5 @@ segmenth_length = 3;
 min_distance = 10; %Minimum distance between two features
 tile_size = 11; %Divides the image in quadratic tiles, this variable describes the width/height
 N = 3; %Maximal number of features within each tile
-[Merkmale] = harris_detektor(IGray, 'segmenth_length', segmenth_length, 'k', k, 'tau', tau, 'do_plot',true , 'min_distance', min_distance, 'tile_size', tile_size, 'N',  N);
+[Merkmale] = harris_detektor(IGray, 'segmenth_length', segmenth_length, 'k', k, 'tau', tau, 'do_plot', true, 'min_distance', min_distance, 'tile_size', tile_size, 'N',  N);
 %  toc;

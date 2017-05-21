@@ -65,10 +65,16 @@ for y = 1+p : size(Image,1)-p
             end
         end
         H(y,x) = det(G) - traceWeight*power(trace(G),2);
-%         if H(y,x) > tau
-%             Merkmale(y,x) = 255;
-%         end
+         if H(y,x) > tau
+             Merkmale(y,x) = 255;
+         end
     end
+end
+if do_plot
+    figure;
+    subplot(1,2,1);
+    imshow(Merkmale);
+    Merkmale(:,:)=0;
 end
 
 %Find local maxima in blocks
@@ -106,10 +112,14 @@ for y = 1+tile_p : tile_p*2+1 : size(H,1)-tile_p-1
         end
     end
 end
-figure;
-imshow(Merkmale);
-            
+
 if do_plot
+    subplot(1,2,2);
+    imshow(Merkmale);
+end   
+
+if do_plot
+    figure;
     imshow(Image)
     red = cat(3, ones(size(Image)), zeros(size(Image)), zeros(size(Image)));
     hold on
