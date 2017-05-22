@@ -38,7 +38,7 @@ while n+1<=nargin
     end
     n= n+2;
 end
-fprintf('segment_length = %d, k = %d, tau = %d, do_plot = %d\n',segment_length,k,tau,do_plot);
+fprintf('segment_length = %d, k = %d, tau = %d, do_plot = %d\n',segment_length,ix,tau,do_plot);
 
 % check whether the picture does only contain one colour dimension
 if size(Image,3) ~= 1
@@ -50,7 +50,10 @@ end
 Merkmale = zeros(size(Image,1), size(Image,2));
 H = zeros(size(Image));
 G = zeros(2);
-%traceWeight = k; %For some reason the expression for H does not work with k directly
+%traceWeight = k; %For some reason the expression for H does not work with
+%k directly 
+%-------------
+%didn't work because iteration variables had the same name
 
 W = [0 1 0; 1 2 1; 0 1 0]; %weights
 [Fx,Fy]=sobel_xy(Image); %gradient
@@ -58,13 +61,13 @@ p = floor(segment_length-1/2); %segment bounds
 for y = 1+p : size(Image,1)-p 
     for x = 1+p : size(Image,2)-p
         G(:,:) = 0;
-        for k = -p : p
-            for l = -p : p
-                dI=[Fx(y+l, x+k),Fy(y+l, x+k)]'*[Fx(y+l, x+k),Fy(y+l, x+k)];
-                G = G + W(l+p+1, k+p+1) * dI;
+        for ix = -p : p
+            for iy = -p : p
+                dI=[Fx(y+iy, x+ix),Fy(y+iy, x+ix)]'*[Fx(y+iy, x+ix),Fy(y+iy, x+ix)];
+                G = G + W(iy+p+1, ix+p+1) * dI;
             end
         end
-        H(y,x) = det(G) - traceWeight*power(trace(G),2);
+        H(y,x) = det(G) - k*power(trace(G),2);
          if H(y,x) > tau
              Merkmale(y,x) = 255;
          end
