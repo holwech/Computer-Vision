@@ -82,9 +82,8 @@ if do_plot
     subplot(1,3,2);
     imshow(Merkmale);
     title('all edges');
-    Merkmale(:,:)=0;
 end
-
+Merkmale(:,:)=0;
 %Find local maxima in blocks
 tile_p = floor(tile_size/2); %quadratic tile with equal tile_size
 
