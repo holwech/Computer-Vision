@@ -126,6 +126,16 @@ if do_plot
     title('only best edges');
 end   
 
+% if do_plot
+%     figure;
+%     imshow(Image)
+%     red = cat(3, ones(size(Image)), zeros(size(Image)), zeros(size(Image)));
+%     hold on
+%     h = imshow(red);
+%     hold off
+%     set(h, 'AlphaData', Merkmale);
+% end
+
 %Function to check if there is already a discovered feature in min_distance
 %from the newly discovered feature
 %IMPLEMENT: Make the function work in areas close to the image boarder
