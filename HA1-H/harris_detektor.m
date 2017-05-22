@@ -50,27 +50,53 @@ end
 Merkmale = zeros(size(Image));
 H = zeros(size(Image));
 G = zeros(2);
-
-disp 'computing H for all pixels ...'
-W = [0 1 0; 1 2 1; 0 1 0]; %weights
 [Fx,Fy]=sobel_xy(Image); %gradient
-p = (segment_length-1)/2; %segment bounds
-%fprintf('p=%d\n',p);
-for y = 1+p : size(Image,1)-p 
-    for x = 1+p : size(Image,2)-p
-        G(:,:) = 0;
-        for ix = -p : p
-            for iy = -p : p
-                dI=[Fx(y+iy, x+ix),Fy(y+iy, x+ix)]'*[Fx(y+iy, x+ix),Fy(y+iy, x+ix)];
-                G = G + W(iy+p+1, ix+p+1) * dI;
+disp 'computing H for all pixels ...'
+    p=(segment_length-1)/2;
+    y=1+p;
+    while(y<size(Image,2)-p)
+        x=1+p;
+        while(x<size(Image,1)-p)
+            % Compute the approximated Harris-Matrix for the Pixel Image(x,y)
+            G = zeros(2);
+            for ix = -p:p
+                for iy = -p:p
+                    w = weight(ix, iy, segment_length);
+                    G = G + w*[Fx(x+ix,y+iy),Fy(x+ix,y+iy)]'*[Fx(x+ix,y+iy),Fy(x+ix,y+iy)];
+                end
             end
+            H(x,y) = det(G)-k*(trace(G)^2);
+            
+            if H(x,y)>tau
+                Merkmale(x,y)=1;% Ecke (black)
+            %elseif H(x,y)<-tau
+                %Merkmale(x,y)=2;% Kante
+            %else
+                %Merkmale(x,y)=3;% Flaeche
+            end
+            x=x+1;
         end
-        H(y,x) = det(G) - k*trace(G)^2;
-         if H(y,x) > tau
-             Merkmale(y,x) = 255;
-         end
+        y=y+1;
     end
-end
+% W = [0 1 0; 1 2 1; 0 1 0]; %weights
+
+% p = (segment_length-1)/2; %segment bounds
+% %fprintf('p=%d\n',p);
+% for x = 1+p : size(Image,1)-p 
+%     for y = 1+p : size(Image,2)-p
+%         G(:,:) = 0;
+%         for ix = -p : p
+%             for iy = -p : p
+%                 dI=[Fx(x+ix, y+iy),Fy(x+ix, y+iy)]'*[Fx(x+ix, y+iy),Fy(x+ix, y+iy)];
+%                 G = G + W(ix+p+1, iy+p+1) * dI;
+%             end
+%         end
+%         H(x,y) = det(G) - k*trace(G)^2;
+%          if H(x,y) > tau
+%              Merkmale(x,y) = 255;
+%          end
+%     end
+% end
 disp 'computation of H finished!';
 
 if do_plot
@@ -124,7 +150,8 @@ if do_plot
     subplot(1,3,3);
     imshow(Merkmale);
     title('only best edges');
-end   
+end
+end
 
 %Function to check if there is already a discovered feature in min_distance
 %from the newly discovered feature
@@ -140,5 +167,24 @@ if ((y > min_distance) && (y < sz(1) - min_distance) && (x > min_distance) && (x
                 hit = 1;
             end
         end
+    end
+end
+end
+
+
+function w = weight(ix,iy,segment_length)
+    % Computes the Weight, such that pixels that are closer to the the
+    % central pixel (i.e. ix and iy are small) have a higher weight
+    if (segment_length == 3)
+    switch abs(ix*iy)
+        case 0
+            w = 4;
+        case 1
+            w = 2;
+        case 2
+            w = 1;
+        otherwise
+            disp('error');
+    end
     end
 end

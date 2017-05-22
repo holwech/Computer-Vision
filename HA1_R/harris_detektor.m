@@ -61,7 +61,7 @@ function  Merkmale = harris_detektor(Image, varargin)
             H(x,y) = det(G)-k*(trace(G)^2);
             
             if H(x,y)>tau
-                Merkmale(x,y)=1;% Ecke
+                Merkmale(x,y)=1;% Ecke (black)
             %elseif H(x,y)<-tau
                 %Merkmale(x,y)=2;% Kante
             %else
