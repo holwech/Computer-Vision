@@ -20,9 +20,9 @@ IGray = rgb_to_gray(checkerImage);
 %  tic;
 k = 0.05;
 tau = 10000;
-segmenth_length = 3;
+segment_length = 3;
 min_distance = 10; %Minimum distance between two features
 tile_size = 11; %Divides the image in quadratic tiles, this variable describes the width/height
 N = 3; %Maximal number of features within each tile
-[Merkmale] = harris_detektor(IGray, 'segmenth_length', segmenth_length, 'k', k, 'tau', tau, 'do_plot', true, 'min_distance', min_distance, 'tile_size', tile_size, 'N',  N);
+[Merkmale] = harris_detektor(IGray, 'segment_length', segment_length, 'k', k, 'tau', tau, 'do_plot', true, 'min_distance', min_distance, 'tile_size', tile_size, 'N',  N);
 %  toc;

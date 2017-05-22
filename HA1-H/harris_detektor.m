@@ -19,7 +19,7 @@ while n+1<=nargin
             do_plot = varargin{n+1};
         case 'segment_length'
             segment_length = varargin{n+1};
-            if mod(segemnt_length,2) == 0
+            if mod(segment_length,2) == 0
                 disp 'Error: segment length is an even number! we should never got here';
                 return;
             end
@@ -38,7 +38,7 @@ while n+1<=nargin
     end
     n= n+2;
 end
-fprintf('segment_length = %d, k = %d, tau = %d, do_plot = %d\n',segment_length,ix,tau,do_plot);
+fprintf('segment_length = %d, k = %d, tau = %d, do_plot = %d\n',segment_length,k,tau,do_plot);
 
 % check whether the picture does only contain one colour dimension
 if size(Image,3) ~= 1
@@ -57,7 +57,8 @@ G = zeros(2);
 
 W = [0 1 0; 1 2 1; 0 1 0]; %weights
 [Fx,Fy]=sobel_xy(Image); %gradient
-p = floor(segment_length-1/2); %segment bounds
+p = (segment_length-1)/2; %segment bounds
+fprintf('p=%d\n',p);
 for y = 1+p : size(Image,1)-p 
     for x = 1+p : size(Image,2)-p
         G(:,:) = 0;
