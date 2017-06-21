@@ -8,7 +8,7 @@ P = inputParser;
 
 P.addOptional('segment_length', 15, @isnumeric);
 P.addOptional('do_plot', false, @islogical);
-P.addOptional('min_corr', 0.5, @isnumeric);
+P.addOptional('min_corr', 0.9, @isnumeric);
 
 P.parse(varargin{:});
 segment_length  = P.Results.segment_length;
@@ -21,7 +21,7 @@ dim_mpt1 = size(Mpt1);
 dim_mpt2 = size(Mpt2);
 I1_mean = mean2(I1);
 I2_mean = mean2(I2);
-matches = zeros(4, dim_mpt1(2));
+matches = zeros(2, dim_mpt1(2));
 max_ncc = NaN(1, dim_mpt1(2));
 
 %% Image padding
@@ -35,7 +35,7 @@ paddedI2 = padarray(I2, [pdg pdg], 'symmetric');
 %% Match search
 % Search through each keypoint and find the point with max correlation
 for p1 = 1:dim_mpt1(2)
-   % p1
+    p1
     p1_seg = paddedI1(...
         Mpt1(2, p1):(Mpt1(2, p1) + twoPdg),  ...
         Mpt1(1, p1):(Mpt1(1, p1) + twoPdg) ...
@@ -47,12 +47,12 @@ for p1 = 1:dim_mpt1(2)
             Mpt2(1, p2):(Mpt2(1, p2) + twoPdg) ...
         );
         % Calculate normalized cross correlation value
-        ncc = NCC(p1_seg, p2_seg, I1_mean, I2_mean)
+        ncc = NCC(p1_seg, p2_seg, I1_mean, I2_mean);
         % If NCC is higher than previous matches and over threshold, store
         % the values in matches and max_ncc
-        if ((ncc > max_ncc(p1)) && (ncc > min_corr))
+        if ((ncc > max_ncc(p1) || isnan(max_ncc(p1))) && (ncc > min_corr))
             max_ncc(p1) = ncc;
-            matches(3:4, p1) = Mpt2(:, p2);
+            matches(1:2, p1) = Mpt2(:, p2);
         end
     end
 end
@@ -61,17 +61,17 @@ end
 % Remove all points that do not have any matches
 % Using the fact that max_ncc indices will be NaN if no match is found for
 % that point. Take the inverse of isnan, and get the matrix of all matches.
-Korrespondenzen = matches(:, ~isnan(max_ncc) == 1);
+Korrespondenzen = [Mpt1(:, ~isnan(max_ncc) == 1); matches(:, ~isnan(max_ncc) == 1)];
 
 %% Plotting
 % TODO: Fix what they ask for at the end of the problem. Something with
 % additional setting (?)
-if (do_plot)
+if(do_plot)
     subplot(1, 2, 1);
     imshow(I1);
     hold on;
     plot(Mpt1(1, :), Mpt1(2, :), 'b.');
-    plot(Korrespondenzen(1, :), Korrespondenzen(2, :), 'r.', 'MarkerSize', 10);
+    plot(Korrespondenzen(1, :), Korrespondenzen(2, :), 'r.');
     subplot(1, 2, 2);
     imshow(I2);
     hold on;
