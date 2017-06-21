@@ -45,26 +45,27 @@ function  Merkmale = harris_detektor(Image, varargin)
 
     % run through image
     disp 'compute G ...'
-    y=1+(segment_length-1)/2;
-    while(y<size(Image,2)-(segment_length-1)/2)
-        x=1+(segment_length-1)/2;
-        while(x<size(Image,1)-(segment_length-1)/2)
+    p=(segment_length-1)/2;
+    y=1+p;
+    while(y<size(Image,2)-p)
+        x=1+p;
+        while(x<size(Image,1)-p)
             % Compute the approximated Harris-Matrix for the Pixel Image(x,y)
             G = zeros(2);
-            for ix = -(segment_length-1)/2:(segment_length-1)/2
-                for iy = -(segment_length-1)/2:(segment_length-1)/2
+            for ix = -p:p
+                for iy = -p:p
                     w = weight(ix, iy, segment_length);
                     G = G + w*[Fx(x+ix,y+iy),Fy(x+ix,y+iy)]'*[Fx(x+ix,y+iy),Fy(x+ix,y+iy)];
                 end
             end
-            H(x,y) = det(G)-k*(trace(G))^2;
+            H(x,y) = det(G)-k*(trace(G)^2);
             
-            if H(x,y)<tau
-                Merkmale(x,y)=1;% Ecke
-            %elseif H(x,y)>tau
+            if H(x,y)>tau
+                Merkmale(x,y)=1;% Ecke (black)
+            %elseif H(x,y)<-tau
                 %Merkmale(x,y)=2;% Kante
             %else
-                %Merkmale(x,y)=3;% Fläche
+                %Merkmale(x,y)=3;% Flaeche
             end
             x=x+1;
         end
