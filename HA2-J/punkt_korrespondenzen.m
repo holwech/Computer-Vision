@@ -6,9 +6,9 @@ function [Korrespondenzen] = punkt_korrespondenzen(I1,I2,Mpt1,Mpt2,varargin)
 %% Set and read input variables
 P = inputParser;
 
-P.addOptional('segment_length', 15, @isnumeric);
+P.addOptional('segment_length', 40, @isnumeric);
 P.addOptional('do_plot', false, @islogical);
-P.addOptional('min_corr', 0.9, @isnumeric);
+P.addOptional('min_corr', 0.999, @isnumeric);
 
 P.parse(varargin{:});
 segment_length  = P.Results.segment_length;
@@ -61,12 +61,19 @@ end
 % Remove all points that do not have any matches
 % Using the fact that max_ncc indices will be NaN if no match is found for
 % that point. Take the inverse of isnan, and get the matrix of all matches.
-Korrespondenzen = [Mpt1(:, ~isnan(max_ncc) == 1); matches(:, ~isnan(max_ncc) == 1)];
+filteredMatches = [max_ncc(~isnan(max_ncc) == 1); Mpt1(:, ~isnan(max_ncc) == 1); matches(:, ~isnan(max_ncc) == 1)];
+% Remove dublicate matches
+filteredMatches = sortrows(filteredMatches', 'descend');
+[v, idx] = unique(filteredMatches(:, 4:5), 'rows');
+Korrespondenzen = filteredMatches(idx, 2:5)';
+
 
 %% Plotting
 % TODO: Fix what they ask for at the end of the problem. Something with
 % additional setting (?)
-if(do_plot)
+% TODO: Correspondence plotting has to be implemented manually (?)
+showMatchedFeatures(I1, I2, Korrespondenzen(1:2, :)', Korrespondenzen(3:4, :)');
+if(false) %do_plot
     subplot(1, 2, 1);
     imshow(I1);
     hold on;
