@@ -8,7 +8,7 @@ P = inputParser;
 
 P.addOptional('segment_length', 40, @isnumeric);
 P.addOptional('do_plot', false, @islogical);
-P.addOptional('min_corr', 0.999, @isnumeric);
+P.addOptional('min_corr', 0.9, @isnumeric);
 
 P.parse(varargin{:});
 segment_length  = P.Results.segment_length;
@@ -20,7 +20,11 @@ min_corr        = P.Results.min_corr;
 dim_mpt1 = size(Mpt1);
 dim_mpt2 = size(Mpt2);
 I1_mean = mean2(I1);
+I1_min = min(min(I1));
+I1_max = max(max(I1));
 I2_mean = mean2(I2);
+I2_min = min(min(I2));
+I2_max = max(max(I2));
 matches = zeros(2, dim_mpt1(2));
 max_ncc = NaN(1, dim_mpt1(2));
 
@@ -29,8 +33,8 @@ max_ncc = NaN(1, dim_mpt1(2));
 % the edge.
 pdg = floor(segment_length / 2);
 twoPdg = 2 * pdg; % Speed optimization
-paddedI1 = padarray(I1, [pdg pdg], 'symmetric');
-paddedI2 = padarray(I2, [pdg pdg], 'symmetric');
+paddedI1 = padarray(I1, [pdg pdg], 'symmetric') - I1_mean;
+paddedI2 = padarray(I2, [pdg pdg], 'symmetric') - I2_mean;
 
 %% Match search
 % Search through each keypoint and find the point with max correlation
@@ -40,14 +44,16 @@ for p1 = 1:dim_mpt1(2)
         Mpt1(2, p1):(Mpt1(2, p1) + twoPdg),  ...
         Mpt1(1, p1):(Mpt1(1, p1) + twoPdg) ...
     );
+    p1_mean = mean2(p1_seg);
     % If there is no matching keypoint, the index will be stored
     for p2 = 1:dim_mpt2(2)
         p2_seg = paddedI2(...
             Mpt2(2, p2):(Mpt2(2, p2) + twoPdg),  ...            
             Mpt2(1, p2):(Mpt2(1, p2) + twoPdg) ...
         );
+        p2_mean = mean2(p2_seg);
         % Calculate normalized cross correlation value
-        ncc = NCC(p1_seg, p2_seg, I1_mean, I2_mean);
+        ncc = NCC(p1_seg, p2_seg, p1_mean, p2_mean);
         % If NCC is higher than previous matches and over threshold, store
         % the values in matches and max_ncc
         if ((ncc > max_ncc(p1) || isnan(max_ncc(p1))) && (ncc > min_corr))
