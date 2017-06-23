@@ -22,18 +22,6 @@ Merkmale1 = harris_detektor(IGray1,'segment_length',9,'k',0.05,'min_dist',50,'N'
 Merkmale2 = harris_detektor(IGray2,'segment_length',9,'k',0.05,'min_dist',50,'N',20,'do_plot',false);
 
 %% Korrespondenzsch�tzung
+tic
 Korrespondenzen = punkt_korrespondenzen(IGray1, IGray2, Merkmale1, Merkmale2, 'do_plot', true);
-
-%% Comparison using inbuilt matlab functions
-figure;
-points1 = detectHarrisFeatures(IGray1);
-points2 = detectHarrisFeatures(IGray2);
-[f1, vpts1] = extractFeatures(IGray1, points1);
-[f2, vpts2] = extractFeatures(IGray2, points2);
-indexPairs = matchFeatures(f1, f2) ;
-matchedPoints1 = vpts1(indexPairs(1:20, 1));
-matchedPoints2 = vpts2(indexPairs(1:20, 2));
-figure; ax = axes;
-showMatchedFeatures(IGray1,IGray2,matchedPoints1,matchedPoints2,'Parent',ax);
-title(ax, 'Candidate point matches with inbuilt matlab functions');
-legend(ax, 'Matched points 1','Matched points 2');
+toc
