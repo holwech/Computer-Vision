@@ -19,8 +19,9 @@ if mod(window_length, 2) == 0
 end
 
 %% Allocate memory, calculate variables
-I1_mean = mean2(I1); I2_mean = mean2(I2);
-% whos I1_mean I2_mean
+I1_mean = mean2(I1);
+I2_mean = mean2(I2);
+whos I1_mean I2_mean
 matches = zeros(2, size(Mpt1,2)); % for each interest point in Mpt1 store interest point of Mpt2 into matches
 max_ncc = NaN(1, size(Mpt1,2)); % for each interest point in Mpt1 that has a match store the amount of correlation into max_ncc
 
@@ -75,8 +76,8 @@ if(do_plot)
     x2 = x2 + sx;
     
     %find the right classified ones
-    threshold = 300;
-    bool = abs(y1-y2)<threshold & abs(x1-x2+sx)<threshold;
+    threshold = 60;
+    bool = (y1-y2)<threshold ;
     x1_good = x1(bool); y1_good = y1(bool);
     x2_good = x2(bool); y2_good = y2(bool);
     bool = ~bool;
@@ -88,15 +89,13 @@ if(do_plot)
     hold on;
     plot([Mpt1(1, :),Mpt2(1, :)+ sx] , [Mpt1(2, :),Mpt2(2, :)], 'b.', 'DisplayName','Alle Merkmalspunkte');
     plot([x1_bad,x2_bad], [y1_bad,y2_bad], 'r.', 'DisplayName', 'Merkmalspunkte mit Korrespondenzen');
-    plot([x1_good,x2_good], [y1_good,y2_good], 'g.', 'DisplayName', 'Merkmalspunkte mit vermutlich richtigen Korrespondenzen');
+    plot([x1_good,x2_good], [y1_good,y2_good], 'g.', 'DisplayName', 'Merkmalspunkte mit richtigen Korrespondenzen');
     hold off;
-    label_numbers = 1:size(Korrespondenzen,2);
-    label_bad = cellstr(num2str(label_numbers(bool)'));
-    text(x1_bad, y1_bad, label_bad, 'Color','red','FontSize', 8);
-	text(x2_bad, y2_bad, label_bad, 'Color','red','FontSize',8);
-    label_good = cellstr(num2str(label_numbers(~bool)'));
-    text(x1_good, y1_good, label_good, 'Color','green','FontSize', 8);
-	text(x2_good, y2_good, label_good, 'Color','green','FontSize',8);
+    labels = cellstr( num2str([1:size(Korrespondenzen,2)]') );
+    text(x1_bad, y1_bad, labels, 'Color','red','FontSize', 8);
+	text(x2_bad, y2_bad, labels, 'Color','red','FontSize',8);
+    text(x1_good, y1_good, labels, 'Color','green','FontSize', 8);
+	text(x2_good, y2_good, labels, 'Color','green','FontSize',8);
     legend('Location', 'northoutside');
     
     %Plot lines between the matching points

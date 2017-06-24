@@ -5,11 +5,11 @@
 %  Bestimmung von Punktkorrespondenzen zwischen Merkmalspunkten einer Stereo
 %  Aufnahme.
 
-%  F�r die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
-%  enfernen und sicherstellen, dass alle optionalen Parameter �ber den
-%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden k�nnen.
+%  Fuer die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
+%  enfernen und sicherstellen, dass alle optionalen Parameter ueber den
+%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden koennen.
 
-
+clc
 %% Bilder laden
 Image1 = imread('szeneL.jpg');
 IGray1 = rgb_to_gray(Image1);
