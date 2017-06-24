@@ -6,7 +6,7 @@ function  [Merkmale] = harris_detektor(Image,varargin)
 do_plot = false;
 segment_length=3;
 k=0.05;
-tau=1;
+tau=10;
 min_distance = 1;
 tile_size = 21;
 N = 1;
@@ -49,7 +49,6 @@ end
 % preallocate memory
 Merkmale = zeros(size(Image));
 H = zeros(size(Image));
-G = zeros(2);
 [Fx,Fy]=sobel_xy(Image); %gradient
 disp 'computing H for all pixels ...'
     p=(segment_length-1)/2;
@@ -117,8 +116,8 @@ tile_p = floor(tile_size/2); %quadratic tile with equal tile_size
 %do not fit the dimentions of the tiles
 %Ex: picture width 2000, tile width 21, only room for 95 tiles => 5 pixel
 %border not handeled
-for y = 1+tile_p : tile_p*2+1 : size(H,1)-tile_p-1
-    for x = 1+tile_p : tile_p*2+1 : size(H,2)-tile_p-1
+for y = 1+tile_p : tile_p*2-1 : size(H,1)-tile_p-1
+    for x = 1+tile_p : tile_p*2-1 : size(H,2)-tile_p-1
         ys = y - tile_p;
         ye = y + tile_p;
         xs = x - tile_p;
@@ -176,15 +175,18 @@ function w = weight(ix,iy,segment_length)
     % Computes the Weight, such that pixels that are closer to the the
     % central pixel (i.e. ix and iy are small) have a higher weight
     if (segment_length == 3)
-    switch abs(ix*iy)
-        case 0
-            w = 4;
-        case 1
-            w = 2;
-        case 2
-            w = 1;
-        otherwise
-            disp('error');
-    end
-    end
+        switch abs(ix*iy)
+            case 0
+                w = 4;
+            case 1
+                w = 2;
+            case 2
+                w = 1;
+            otherwise
+                disp('error');
+        end
+    else
+        w=1;
+        disp 'Error: weight for segment_length other than 3 unknown.'
+    end    
 end

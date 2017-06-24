@@ -21,7 +21,5 @@ IGray2 = rgb_to_gray(Image2);
 Merkmale1 = harris_detektor(IGray1,'segment_length',9,'k',0.05,'min_dist',50,'N',20,'do_plot',false);
 Merkmale2 = harris_detektor(IGray2,'segment_length',9,'k',0.05,'min_dist',50,'N',20,'do_plot',false);
 
-%% Korrespondenzsch�tzung
-tic;
-Korrespondenzen = punkt_korrespondenzen(IGray1, IGray2, Merkmale1, Merkmale2, 'do_plot', true, 'window_length', 15, 'min_corr', 0.95);
-toc;
+%% Korrespondenzschaetzung
+Korrespondenzen = punkt_korrespondenzen(IGray1, IGray2, Merkmale1, Merkmale2, 'do_plot', true, 'window_length', 15, 'min_corr', 0.995);

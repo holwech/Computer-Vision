@@ -11,20 +11,23 @@
 
 
 %% Bild laden
-Image = imread('szene.jpg');
+for i=1:16
+Image = imread(['UnterlagenVaterUnbekannt' int2str(i) '.jpg']);
 figure();
 subplot(2,2,1);
 imshow(Image);
 IGray = rgb_to_gray(Image);
 subplot(2,2,2);
 imshow(IGray);
-[Fx,Fy]=sobel_xy(IGray);
-subplot(2,2,3);
-imshow(Fx);
-subplot(2,2,4);
-imshow(Fy);
-
-%% Harris-Merkmale berechnen
-tic;
-Merkmale = harris_detektor(IGray,'do_plot',true);
-toc;
+imwrite(IGray,['UnterlagenVaterUnbekannt' int2str(i) '_gray.jpg'])
+end
+% [Fx,Fy]=sobel_xy(IGray);
+% subplot(2,2,3);
+% imshow(Fx);
+% subplot(2,2,4);
+% imshow(Fy);
+% 
+% %% Harris-Merkmale berechnen
+% tic;
+% Merkmale = harris_detektor(IGray,'do_plot',true);
+% toc;

@@ -1,13 +1,13 @@
-%  Gruppennummer:
-%  Gruppenmitglieder:
-
+%  Gruppennummer: M13
+%  Gruppenmitglieder: Bjørn Håvard Hoffmann, Joachim Holwech, Regine Hartwig
+%
 %% Hausaufgabe 1
 %  Einlesen und Konvertieren von Bildern sowie Bestimmung von 
 %  Merkmalen mittels Harris-Detektor. 
 
-%  Fï¿½r die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
-%  enfernen und sicherstellen, dass alle optionalen Parameter ï¿½ber den
-%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden kï¿½nnen.
+%  Fuer die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
+%  enfernen und sicherstellen, dass alle optionalen Parameter ueber den
+%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden koennen.
 
 
 %% Bild laden
@@ -34,5 +34,5 @@ tic;
 %min_distance   : Minimum distance between two features
 %tile_size      : Divides the image in quadratic tiles, this variable describes the width/height
 %N              : Maximal number of features within each tile
-[Merkmale] = harris_detektor(IGray, 'segment_length', 3, 'k', 0.05, 'tau', 1, 'do_plot', true, 'min_distance', 10, 'tile_size', 11, 'N',  3);
+[Merkmale] = harris_detektor(IGray, 'segment_length', 3, 'k', 0.05, 'tau', 1000, 'do_plot', true, 'min_distance', 10, 'tile_size', 11, 'N',  3);
 toc;

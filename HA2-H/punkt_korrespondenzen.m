@@ -1,4 +1,5 @@
 function [Korrespondenzen] = punkt_korrespondenzen(I1,I2,Mpt1,Mpt2,varargin)
+tic
 %% Set and read input variables
 P = inputParser;
 
@@ -18,14 +19,12 @@ if mod(window_length, 2) == 0
 end
 
 %% Allocate memory, calculate variables
-dim_mpt1 = size(Mpt1);
-dim_mpt2 = size(Mpt2);
 I1_mean = mean2(I1);
 I2_mean = mean2(I2);
 V_mean = double(ones(window_length)*I1_mean);
 W_mean = double(ones(window_length)*I2_mean);
-matches = zeros(2, dim_mpt1(2));
-max_ncc = NaN(1, dim_mpt1(2));
+matches = zeros(2, size(Mpt1,2)); % for each interest point in Mpt1 store interest point of Mpt2 into matches
+max_ncc = NaN(1, size(Mpt1,2)); % for each interest point in Mpt1 that has a match store the amount of correlation into max_ncc
 
 %% Image padding
 % Padding is added to the images, in case of comparisons of points close to the
@@ -37,13 +36,13 @@ paddedI2 = padarray(I2, [pdg pdg], 'symmetric');
 
 %% Match search
 % Search through each keypoint and find the point with max correlation
-for p1 = 1:dim_mpt1(2)
+for p1 = 1:size(Mpt1,2)
     p1_seg = paddedI1(...
         Mpt1(2, p1):(Mpt1(2, p1) + twoPdg),  ...
         Mpt1(1, p1):(Mpt1(1, p1) + twoPdg) ...
     );
     % If there is no matching keypoint, the index will be stored
-    for p2 = 1:dim_mpt2(2)
+    for p2 = 1:size(Mpt2,2)
         p2_seg = paddedI2(...
             Mpt2(2, p2):(Mpt2(2, p2) + twoPdg),  ...            
             Mpt2(1, p2):(Mpt2(1, p2) + twoPdg) ...
@@ -52,7 +51,7 @@ for p1 = 1:dim_mpt1(2)
         ncc = NCC(p1_seg, p2_seg, V_mean, W_mean);
         % If NCC is higher than previous matches and over threshold, store
         % the values in matches and max_ncc
-        if ((ncc > max_ncc(p1) || isnan(max_ncc(p1))) && (ncc > min_corr))
+        if (( ncc > max_ncc(p1) || isnan(max_ncc(p1)) ) && (ncc > min_corr))
             max_ncc(p1) = ncc;
             matches(1:2, p1) = Mpt2(:, p2);
         end
@@ -65,28 +64,37 @@ end
 % that point. Take the inverse of isnan, and get the matrix of all matches.
 Korrespondenzen = [Mpt1(:, ~isnan(max_ncc) == 1); matches(:, ~isnan(max_ncc) == 1)];
 fprintf('Number of matches found: %i \n', size(Korrespondenzen,2));
+toc
 
 %% Plotting
 if(do_plot)
     %Plot feature points as blue dots and feature points that have a match
     %in red.
-    imshow([I1 I2]);
+    figure();
     sx = size(I1,2);
+    
+    %Plot labels to the dots
+    imshow([I1 I2]);
     hold on;
-    plot(Mpt1(1, :), Mpt1(2, :), 'b.');
-    plot(Korrespondenzen(1, :), Korrespondenzen(2, :), 'r.');
-    plot(Mpt2(1, :) + sx, Mpt2(2, :), 'b.');
-    plot(Korrespondenzen(3, :) + sx, Korrespondenzen(4, :), 'r.');
+    plot(Mpt1(1, :), Mpt1(2, :), 'b.', 'HandleVisibility','off');
+    plot(Mpt2(1, :) + sx, Mpt2(2, :), 'b.', 'DisplayName','Alle Merkmalspunkte');
+    plot(Korrespondenzen(1, :), Korrespondenzen(2, :), 'r.', 'HandleVisibility','off');
+    plot(Korrespondenzen(3, :) + sx, Korrespondenzen(4, :), 'r.', 'DisplayName', 'Merkmalspunkte mit Korrespondenzen');
+    labels = cellstr( num2str([1:size(Korrespondenzen,2)]') );
+    text(Korrespondenzen(1, :), Korrespondenzen(2, :), labels, 'Color','red','FontSize', 8);
+	text(Korrespondenzen(3, :)+ sx, Korrespondenzen(4, :), labels, 'Color','red','FontSize',8);
+    hold off;
+    legend('Location', 'northoutside');
     
     %Plot lines between the matching points
-%     sx = size(I1,2);
-%     imshow([I1 I2]);
-%     x1 = Korrespondenzen(1,:)'; y1 = Korrespondenzen(2,:)';
-%     x2 = Korrespondenzen(3,:)'; y2 = Korrespondenzen(4,:)';
-%     hold on;
-%     x2 = x2 + sx;
-%     plot([x1 x2]', [y1 y2]', 'r', 'LineWidth', 1);
-    
+    figure();
+    imshow([I1 I2]);
+    x1 = Korrespondenzen(1,:)'; y1 = Korrespondenzen(2,:)';
+    x2 = Korrespondenzen(3,:)'; y2 = Korrespondenzen(4,:)';
+    hold on;
+    x2 = x2 + sx;
+    plot([x1 x2]', [y1 y2]', 'r', 'LineWidth', 1);
+    hold off;
 end
 end
 
