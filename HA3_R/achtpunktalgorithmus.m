@@ -34,7 +34,7 @@ if(cali==1)
     % estimate F
     %fprintf('\n estimate F\n');
     EF = K\EF*K;
-    [U_F,S_F,V_F] = svd(F);
+    [U_F,S_F,V_F] = svd(EF);
     S_F(3,3)=0;
     EF = U_F*S_F*V_F;
     

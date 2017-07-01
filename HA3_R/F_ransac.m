@@ -3,7 +3,7 @@ function [Korrespondenzen_robust] = F_ransac(Korrespondenzen,varargin)
 % robusten Korrespondenzpunktpaaren
 
 % define epsilon,p and tolerance
-epsilon=0.50;
+epsilon=0.60;
 p=0.9;
 tolerance=1000;
 if(nargin>1)
@@ -53,7 +53,7 @@ ConsensusSet_best=zeros(size(Korrespondenzen,2),1);
             end
         end
     end
-Korrespondenzen_robust=Korrespondenzen(logical(ConsensusSet_best));
+Korrespondenzen_robust=Korrespondenzen(:,logical(ConsensusSet_best));
 %display(F_best);
 end
 
