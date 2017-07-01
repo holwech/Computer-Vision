@@ -8,19 +8,15 @@ if(nargin==2)
     cali=1;
 end
 
-if(cali==1)
-    for k=1:size(Korrespondenzen,2)
-        
-
 % Kronecker Product of correspondences
 A = zeros(size(Korrespondenzen,2),9);
 for k=1:size(Korrespondenzen,2)
     x1=[Korrespondenzen(1:2,k);1];
     x2=[Korrespondenzen(3:4,k);1];
-%     if(cali==1)
-%         x1=K\x1;
-%         x2=K\x2;
-%     end
+    if(cali==1)
+        x1=K\x1;
+        x2=K\x2;
+    end
     A(k,:)=kron(x1,x2)';
 end
 
@@ -37,13 +33,13 @@ EF = U_G*S*V_G;
 if(cali==1)
     % estimate F
     %fprintf('\n estimate F\n');
-%     EF = K\EF*K;
-%     [U_F,S_F,V_F] = svd(F);
-%     S_F(3,3)=0;
-%     EF = U_F*S_F*V_F;
+    EF = K\EF*K;
+    [U_F,S_F,V_F] = svd(F);
+    S_F(3,3)=0;
+    EF = U_F*S_F*V_F;
     
-    S_G(3,3)=0;
-    EF = U_G*S_G*V_G;
+%     S_G(3,3)=0;
+%     EF = U_G*S_G*V_G;
 end
 
 end
