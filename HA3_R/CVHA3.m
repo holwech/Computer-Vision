@@ -1,5 +1,5 @@
-%  Gruppennummer:
-%  Gruppenmitglieder:
+%  Gruppennummer: M13
+%  Gruppenmitglieder: Bjørn Håvard Hoffmann, Joachim Holwech, Regine Hartwig
 
 %% Hausaufgabe 3
 %  Bestimmung von robusten Korrespondenzpunktpaaren mittels RANSAC und
@@ -35,6 +35,6 @@ if ~isempty(Korrespondenzen_robust)
     plot_korrespondenzen(IGray1,IGray2,Korrespondenzen_robust);
 end
 %% Berechnung der Essentiellen Matrix
-% load('K.mat');
-% E = achtpunktalgorithmus(Korrespondenzen_robust,K);
+load('K.mat');
+E = achtpunktalgorithmus(Korrespondenzen_robust,K);
 

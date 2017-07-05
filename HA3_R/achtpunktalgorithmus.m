@@ -25,21 +25,18 @@ end
 G = [V_A(1:3,9),V_A(4:6,9),V_A(7:9,9)];
 [U_G,S_G,V_G] = svd(G);
 
-% estimate E
-S=[1,0,0;0,1,0;0,0,0];
-EF = U_G*S*V_G;
-% 3D-Reconstruction?
-
-if(cali==1)
+if(cali==0)
     % estimate F
-    %fprintf('\n estimate F\n');
-    EF = K\EF*K;
-    [U_F,S_F,V_F] = svd(EF);
-    S_F(3,3)=0;
-    EF = U_F*S_F*V_F;
+    S_G(3,3)=0;
+    EF = U_G*S_G*V_G;
     
-%     S_G(3,3)=0;
-%     EF = U_G*S_G*V_G;
+elseif(cali==1)
+    % estimate E
+    %fprintf('\n estimate E\n');
+    S=[1,0,0;0,1,0;0,0,0];
+    EF = U_G*S*V_G;
+    EF = EF;
+    % 3D-Reconstruction?
 end
 
 end

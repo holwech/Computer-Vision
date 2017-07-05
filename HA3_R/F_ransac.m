@@ -3,9 +3,11 @@ function [Korrespondenzen_robust] = F_ransac(Korrespondenzen,varargin)
 % robusten Korrespondenzpunktpaaren
 
 % define epsilon,p and tolerance
-epsilon=0.60;
-p=0.9;
-tolerance=1000;
+epsilon=0.50;	% estimated proportion of wrong matched correspondences in "Korrespondenzen"
+                % influences the number of iterations
+p=0.99; % wanted probability that this algoritm provides a set of KPs that are correctly matched
+        % influences only the number of iterations
+tolerance=5000; % maximal distance of korrespondences that are mapped by F and should in fact lie close to each other if F is a good projection
 if(nargin>1)
     epsilon=varargin{1};
     if(nargin>2)
@@ -17,15 +19,16 @@ if(nargin>1)
 end
 load('K.mat');
 % compute how many models we compute
-S = floor(log(1-p)/log(1-(1-epsilon)^8))
+S = floor(log(1-p)/log(1-(1-epsilon)^8));
+display(S);
 
 amount_best=0;
 sumdist_best=0;
 ConsensusSet_best=zeros(size(Korrespondenzen,2),1);
     for s=1:S
         Korr=choose_random(Korrespondenzen);
-        F=achtpunktalgorithmus(Korr,K);
-        
+        E=achtpunktalgorithmus(Korr,K);
+        F=K\E*K;
         ConsensusSet=zeros(size(Korrespondenzen,2),1);
         amount=0;
         sumdist=0;
