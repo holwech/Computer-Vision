@@ -32,10 +32,8 @@ if(cali==0)
     
 elseif(cali==1)
     % estimate E
-    %fprintf('\n estimate E\n');
     S=[1,0,0;0,1,0;0,0,0];
     EF = U_G*S*V_G;
-    EF = EF;
     % 3D-Reconstruction?
 end
 
