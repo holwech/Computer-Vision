@@ -19,7 +19,7 @@ if(nargin>1)
 end
 % compute how many models we compute
 S = floor(log(1-p)/log(1-(1-epsilon)^8));
-display(S);
+% display(S);
 
 amount_best=0;
 sumdist_best=0;
@@ -66,7 +66,6 @@ end
 function dist = sampson_dist(Ko,F)
     x1=[Ko(1:2,:);1];
     x2=[Ko(3:4);1];
-    e3=[0;0;1];
     e3_dach = [0 1 0; -1 0 0; 0 0 0];
     dist = ( (x2'*F*x1)^2 )/( norm(e3_dach*F*x1,2)^2 + norm(x2'*F*e3_dach,2)^2 );
 end
