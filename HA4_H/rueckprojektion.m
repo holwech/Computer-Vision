@@ -36,7 +36,7 @@ for i = 1:n
 end
 repro_error = repro_error/n;
 
-
+figure();
 imshow(uint8(I2));
 hold on;
 %Plot estimates

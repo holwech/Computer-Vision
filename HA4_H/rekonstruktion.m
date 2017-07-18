@@ -16,19 +16,19 @@ x1 = K\x1;
 x2 = K\x2;
 
 %% Constuct M for all four possible (R,T):
-% For E we have (R1,T1) and (R2,T2)
-% For -E we have (-R1,T1) and (-R2,T2)
+
+%We have four combinations of (R1,R2,T1,T2)
+%(R1,T1) ==> E
+%(R2,T2)
+%(R1,T2) ==> -E
+%(R2,T1)
+
 diagonal_elements = {zeros(3,n), zeros(3,n), zeros(3,n), zeros(3,n)};
 column_elements = {zeros(3,n), zeros(3,n), zeros(3,n), zeros(3,n)};
-R_cell = {R1, R2, -R1, -R2};
+R_cell = {R1, R1, R2, R2};
 T_cell = {T1, T2, T1, T2};
 M_diag_cell = {0, 0, 0, 0};
 M_cell = {0, 0, 0, 0};
-
-% diagonal_elements_1 = zeros(3,n);
-% last_column_1 = zeros(3,n);
-% diagonal_elements_2 = zeros(3,n);
-% last_column_2 = zeros(3,n);
 
 %Calculate x2_hat*R*x1 and x2_hat*T for all KP
 for set = 1:4
@@ -47,6 +47,7 @@ for set = 1:4
     %M_cell{set} = full(M_cell{set});
     
 end
+%M_cell{1}
 
 %% Minimize M*d using svd
 d = {zeros(n + 1,1), zeros(n + 1,1), zeros(n + 1,1), zeros(n + 1,1)};
@@ -79,10 +80,12 @@ end
 
 T = d{index}(n + 1)*T_cell{index}; %T = gamma*Ti
 R = R_cell{index};
-lambdas = d{index}(1:n)
+lambdas = d{index}(1:n);
 
-Pi = 
-P1 = d{index}(1,:)*x1(:,:);
+P1 = zeros(3, n);
+for i = 1:n
+    P1(:,i) = lambdas(i,1)*x1(:,i);
+end
 
 
 end

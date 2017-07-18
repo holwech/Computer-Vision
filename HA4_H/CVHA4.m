@@ -60,6 +60,7 @@ disp(E);
 
 %% Extraktion der möglichen euklidischen Bewegungen aus der Essentiellen Matrix und 3D-Rekonstruktion der Szene
 [T1,R1,T2,R2] = TR_aus_E(E);
+%[T,R,lambdas,P1] = rek2(T1,T2,R1,R2,Korrespondenzen_robust,K);
 [T,R,lambdas,P1] = rekonstruktion(T1,T2,R1,R2,Korrespondenzen_robust,K);
 
 %% Berechnung des mittleren Rückprojektionsfehlers auf der Bildebene von Kamera 2
