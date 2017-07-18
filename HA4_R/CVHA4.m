@@ -1,5 +1,5 @@
-%  Gruppennummer:
-%  Gruppenmitglieder:
+%  Gruppennummer: M13
+%  Gruppenmitglieder: 
 
 %% Hausaufgabe 4
 %  Bestimmung der euklidischen Bewegung und der 3D Rekonstruktion aus einem Stereobildpaar. 
@@ -59,8 +59,8 @@ disp(E);
 
 
 %% Extraktion der möglichen euklidischen Bewegungen aus der Essentiellen Matrix und 3D-Rekonstruktion der Szene
-% [T1,R1,T2,R2] = TR_aus_E(E);
-% [T,R,lambdas,P1] = rekonstruktion(T1,T2,R1,R2,Korrespondenzen_robust,K);
+[T1,R1,T2,R2] = TR_aus_E(E);
+[T,R,lambdas,P1] = rekonstruktion(T1,T2,R1,R2,Korrespondenzen_robust,K);
 
 %% Berechnung des mittleren Rückprojektionsfehlers auf der Bildebene von Kamera 2
 % repro_error = rueckprojektion(Korrespondenzen_robust, P1, IGray2, T, R, K);
