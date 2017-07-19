@@ -57,13 +57,15 @@ switch index
 end
 
 % reconstrucion of P
-P1 = X1*diag(lambdas(1:n));
+P1 = X1*diag(lambdas(1:n)/lambdas(n+1));
+
+% 3D Plot
 figure;
 scatter3(P1(1,:),P1(2,:),P1(3,:),'bo');
 hold on
 O = -R'*T*lambdas(n+1); % coordinates of camera 2 in coordinate system 1
-scatter3(O(1),O(2),O(3),'rd');
-scatter3(0,0,0,'rd');
+cam2 = scatter3(O(1),O(2),O(3),'rd');
+cam1 = scatter3(0,0,0,'rd');
 hold off
 end
 

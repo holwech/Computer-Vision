@@ -32,4 +32,4 @@ function [T1,R1,T2,R2] = TR_aus_E(E)
 %          T2 = -(1.0/2) * T2;
 %      end
 %  end
-% end
+end
