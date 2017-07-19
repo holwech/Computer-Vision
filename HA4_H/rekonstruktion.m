@@ -23,48 +23,43 @@ x2 = K\x2;
 %(R1,T2) ==> -E
 %(R2,T1)
 
-diagonal_elements = {zeros(3,n), zeros(3,n), zeros(3,n), zeros(3,n)};
-column_elements = {zeros(3,n), zeros(3,n), zeros(3,n), zeros(3,n)};
-R_cell = {R1, R1, R2, R2};
+R_cell = {R1, R2, R2, R1};
 T_cell = {T1, T2, T1, T2};
-M_diag_cell = {0, 0, 0, 0};
-M_cell = {0, 0, 0, 0};
-
-%Calculate x2_hat*R*x1 and x2_hat*T for all KP
+M_diag = [zeros(3*n,n,4)];
+M_column = [zeros(3*n, 1, 4)];
+M = [zeros(3*n, n + 1, 4)];
 for set = 1:4
+    j = 1;
     for i = 1:n
         x2_hat = skew(x2(:,i));
-        diagonal_elements{set}(:,i) = x2_hat*R_cell{set}*x1(:,i);
-        column_elements{set}(:,i) = x2_hat*T_cell{set};
+        M_diag(j:j+2, i, set) = x2_hat*R_cell{set}*x1(:,i);
+        M_column(j:j+2, 1, set) = x2_hat*T_cell{set};
+        j = j + 3;
     end
-
-    %Gather in matrix form
-    [r,c] = size(diagonal_elements{set});
-    i = 1:numel(diagonal_elements{set});
-    j = repmat(1:c,r,1);
-    M_diag_cell{set} = full(sparse(i',j(:),diagonal_elements{set}(:)));
-    M_cell{set} = [M_diag_cell{set} reshape(column_elements{set},3*n, 1)];
-    %M_cell{set} = full(M_cell{set});
-    
+    M(:,:,set) = [M_diag(:,:,set) M_column(:,1,set)];
 end
-%M_cell{1}
+        
+    
+
+
 
 %% Minimize M*d using svd
-d = {zeros(n + 1,1), zeros(n + 1,1), zeros(n + 1,1), zeros(n + 1,1)};
+d = [zeros(n + 1, 4)];
 for set = 1:4
-    [~, ~, V] = svd(M_cell{set});
+    [~, ~, V] = svd(M(:,:,set));
     sz = size(V,2);
-    d{set}(:,1) = V(:,sz);
+    d(:,set) = V(:,sz);
 end
+
 
 %% Find the correct (R,T) 
 %by checking lambda2*x2 = lambda1*R*x1 + gamma*T for
 %both lambda1, lambda2 > 0
-counter = {0, 0, 0, 0};
+counter = [0, 0, 0, 0];
 for set = 1:4
     for i = 1:n
-        if(d{set}(i) > 0)
-            counter{set} = counter{set} + 1;
+        if(d(i, set) > 0)
+            counter(set) = counter(set) + 1;
         end
     end
 end
@@ -72,21 +67,22 @@ end
 index = 1;
 value = 0;
 for set = 1:4
-    if(counter{set} > value)
+    if(counter(set) > value)
         index = set;
-        value = counter{set};
+        value = counter(set);
     end
 end
 
-T = d{index}(n + 1)*T_cell{index}; %T = gamma*Ti
+
+T = d(n + 1, index)*T_cell{index}; %T = gamma*Ti
 R = R_cell{index};
-lambdas = d{index}(1:n);
+lambdas = d(1:n, index);
 
 P1 = zeros(3, n);
 for i = 1:n
     P1(:,i) = lambdas(i,1)*x1(:,i);
 end
-
+P1 = [P1(:,:); ones(1,n)];
 
 end
 
@@ -94,4 +90,4 @@ function [sm] = skew(vec)
 sm = [0 -vec(3) vec(2);
     vec(3) 0 -vec(1);
     -vec(2) vec(1) 0];
-end
+ end
