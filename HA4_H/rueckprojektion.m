@@ -19,8 +19,7 @@ for i = 1:n
     P2(:,i) = M*P1(:,i);
     %P2 = lambda2*x2 ==> find the lambda that sets the z-coord of x2_est to
     %one
-    lambda = P2(3,i);
-    x2_est(:,i) = P2(1:3,i)/lambda;
+    x2_est(:,i) = P2(1:3,i)/P2(3,i);
 end
 
 %Compute backprojection error
@@ -37,13 +36,14 @@ for i = 1:n
 end
 repro_error = repro_error/n;
 
-% figure();
-% imshow(uint8(I2));
-% hold on;
-% %Plot estimates
-% plot(x2_est(1,:), x2_est(2,:), '*r');
-% %Plot KPs
-% plot(x2(1,:), x2(2,:), '*g');
+figure();
+imshow(uint8(I2));
+hold on;
+%Plot estimates
+plot(x2_est(1,:), x2_est(2,:), '*r');
+%Plot KPs
+plot(x2(1,:), x2(2,:), '*g');
+title('Green points are the KPs, and red points are the projected points');
 
 
 end

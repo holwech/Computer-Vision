@@ -10,8 +10,8 @@ n = size(Korrespondenzen, 2);
 %% Preprocess the KPs
 %Put the pixel coordinates in homogenous form and use the calibration
 %matrix K to find the homogenous coordinates.
-x1 = [Korrespondenzen(1:2,:);ones(1,size(Korrespondenzen,2))];
-x2 = [Korrespondenzen(3:4,:);ones(1,size(Korrespondenzen,2))];
+x1 = [Korrespondenzen(1:2,:);ones(1,n)];
+x2 = [Korrespondenzen(3:4,:);ones(1,n)];
 x1 = K\x1;
 x2 = K\x2;
 
@@ -49,8 +49,9 @@ for set = 1:4
     [~, ~, V] = svd(M(:,:,set));
     sz = size(V,2);
     d(:,set) = V(:,sz);
+    d(:,set) = d(:,set)/d(n + 1, set);
 end
-
+%d
 
 %% Find the correct (R,T) 
 %by checking lambda2*x2 = lambda1*R*x1 + gamma*T for
@@ -82,7 +83,34 @@ P1 = zeros(3, n);
 for i = 1:n
     P1(:,i) = lambdas(i,1)*x1(:,i);
 end
+
 P1 = [P1(:,:); ones(1,n)];
+
+
+
+close all
+% 3D Plot
+figure;
+%Change coordinates for plot so it looks nicer with respect to 
+%the way matlab plots it
+%Axis change: z_camerea = x_matlab, y_camera = -y_matlab
+%To achieve this we rotate 90deg about x and 90deg about z
+Rx = [1 0 0; 0 0 -1; 0 1 0]; %Rotate 90deg about x-axis
+Rz = [0 -1 0; 1 0 0; 0 0 1]; %Rotate 90deg about z-axis
+M = Rx*Rz; % x_camera_coord = M*x_plot_coord, M is the change of basis
+%This means that x_plot_coord = M'*x_camera_coord
+P_plot = M'*P1(1:3,:);
+h = scatter3(P_plot(1,:),P_plot(2,:),P_plot(3,:),'bo');
+hold on
+O = -R'*T; % coordinates of camera 2 in coordinate system 1
+O_plot = M'*O;
+scatter3(O_plot(1),O_plot(2),O_plot(3),'rd');
+scatter3(0,0,0,'rs');
+
+xlabel('x') % x-axis label
+ylabel('y') % y-axis label
+zlabel('z') % z-axis label
+
 
 end
 
