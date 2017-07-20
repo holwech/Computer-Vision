@@ -27,9 +27,7 @@ end
 lambdas = zeros(n+1,4);
 for set=1:4
     [~,~,V] = svd(M(:,:,set));
-%     lambdas(:,set) = V(:,size(V,2))*( 1.0/V(size(V,1),size(V,2) ) );
     lambdas(:,set) = V(:,n+1)/V(n+1,n+1);
-
 end
 
 % return the euklidean movement for which most of the lambdas are positive
@@ -48,7 +46,7 @@ switch index
         T=T1;
     case 4
         R=R2;
-        T=T2;S
+        T=T2;
     otherwise
         disp('Where am I?')
 end
@@ -61,11 +59,8 @@ figure;
 scatter3(P1(1,:),P1(2,:),P1(3,:),'bo');
 hold on
 O = -R'*T; % coordinates of camera 2 in coordinate system 1
-%O=T; % coordinates of camera 2 in coordinate system 1
 plotCamera('Location',[O(1),O(2),O(3)],'Color',[1,0,0], 'Size', 0.2)
 plotCamera('Location',[0,0,0],'Color',[1,0,0], 'Size', 0.2)
-%scatter3(O(1),O(2),O(3),'rd');
-%scatter3(0,0,0,'rd');
 xlabel('X');
 ylabel('Y');
 zlabel('Z');
