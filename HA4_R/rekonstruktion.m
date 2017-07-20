@@ -32,14 +32,24 @@ for set=1:4
 end
 
 % return the euklidean movement for which most of the lambdas are positive
-bool = uint8(lambdas>0) % returns matrix with zeros and ones
-count_positive = sum(bool,1) % sums the values in each column and returns row vector
+bool = uint8(lambdas>0); % returns matrix with zeros and ones
+count_positive = sum(bool,1); % sums the values in each column and returns row vector
 % bool = lambdas_inv>0; % returns bool matrix
 % count_positive_inv = sum(bool,1); % sums the values in each column and returns row vector
 % if max(count_positive_inv)>max(count_positive)
 %     count_positive = count_positive_inv;
 % end
-[~,index] = max(count_positive)
+[~,index] = max(count_positive);
+for i = 1:4
+    if i ~= index
+        if count_positive(i)==count_positive(index)
+            if sum(lambdas(:,i))>sum(lambdas(:,index))
+                index = i;
+            end
+        end
+    end
+end
+
 R = R_cell{index};
 T = T_cell{index};
 % reconstruction of P
@@ -47,25 +57,25 @@ P1 = X1*diag(lambdas(1:n,index));
 %lambdas=lambdas(:,index);
 
 % 3D Plot
+close all
 figure;
-%subplot(1,3,2)
 plot(P1,R,T)
 title('chosen R,T')
 
-for index = 1:4
-    
-    R = R_cell{index};
-    T = T_cell{index};
-
-
-    % reconstruction of P
-    P1 = X1*diag(lambdas(1:n,index));
-
-    % 3D Plot
-    figure
-    %subplot(index+2,3,2)
-    plot(P1,R,T)
-end
+% for index = 1:4
+%     
+%     R = R_cell{index};
+%     T = T_cell{index};
+% 
+% 
+%     % reconstruction of P
+%     P1 = X1*diag(lambdas(1:n,index));
+% 
+%     % 3D Plot
+%     figure
+%     %subplot(index+2,3,2)
+%     plot(P1,R,T)
+% end
 
 end
 

@@ -63,6 +63,5 @@ E = achtpunktalgorithmus(Korrespondenzen_robust,K);
 [T,R,lambdas,P1] = rekonstruktion(T1,T2,R1,R2,Korrespondenzen_robust,K);
 
 %% Berechnung des mittleren Rueckprojektionsfehlers auf der Bildebene von Kamera 2
-% repro_error = rueckprojektion(Korrespondenzen_robust, P1, IGray2, T, R, K);
-
-
+repro_error = rueckprojektion(Korrespondenzen_robust, P1, IGray2, T, R, K);
+disp(repro_error)
