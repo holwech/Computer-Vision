@@ -21,6 +21,7 @@ end
 
 % Solve the optimization problem to obtain lambda-vector for each matrix M(:,:,i)
 lambdas = zeros(size(Korrespondenzen,2)+1,4);
+M(:,:,1)
 for j=1:4
     [U,S,V] = svd(M(:,:,j));
     lambdas(:,j) = V(:,size(Korrespondenzen,2)+1);

@@ -15,17 +15,23 @@ S = diag([1 1 0]);
 E = U*S*V';
 
 %Find T_hat and R by using svd
-[U, S, V] = svd(E);
+[U, ~, V] = svd(E);
 
 %Make sure U and V are orthonormal rotationmatrices ==> det(U) = 1 det(V)=1
+
 d1 = int16(det(U));
 d2 = int16(det(V));
 if (d1 ~= 1)
     U = U*[1 0 0; 0 1 0; 0 0 -1];
 end
 if (d2 ~= 1)
-    V = [1 0 0; 0 1 0; 0 0 -1]*V;
+    V = V*[1 0 0; 0 1 0; 0 0 -1];
 end
+% d1 = int16(det(U))
+% d2 = int16(det(V))
+% Error = U*S*V' - E
+
+%[U, S, V] = svd(E);
 
 T1_hat = U*Rz_pos*S*U';
 T1 = [T1_hat(3,2); T1_hat(3,1)*-1; T1_hat(2,1)];
