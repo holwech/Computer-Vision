@@ -1,12 +1,13 @@
+
 %  Gruppennummer: M13
-%  Gruppenmitglieder: 
+%  Gruppenmitglieder: Joachim Holwech, Bjoern Hoffmann, Regine Hartwig
 
 %% Hausaufgabe 4
 %  Bestimmung der euklidischen Bewegung und der 3D Rekonstruktion aus einem Stereobildpaar. 
 
-%  F�r die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
-%  enfernen und sicherstellen, dass alle optionalen Parameter �ber den
-%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden k�nnen.
+%  Fuer die letztendliche Abgabe bitte die Kommentare in den folgenden Zeilen
+%  enfernen und sicherstellen, dass alle optionalen Parameter ueber den
+%  entsprechenden Funktionsaufruf fun('var',value) modifiziert werden koennen.
 
 
 %% Bilder laden
@@ -22,7 +23,7 @@ Merkmale2 = harris_detektor(IGray2,'segment_length',9,'k',0.05,'min_dist',80,'N'
 
 
 
-%% Korrespondenzsch�tzung
+%% Korrespondenzschaetzung
 tic;
 Korrespondenzen = punkt_korrespondenzen(IGray1,IGray2,Merkmale1,Merkmale2,'window_length',25,'min_corr',0.9,'do_plot',false);
 zeit_korrespondenzen = toc;
@@ -57,12 +58,11 @@ load('K.mat');
 E = achtpunktalgorithmus(Korrespondenzen_robust,K);
 disp(E);
 
-
-%% Extraktion der m�glichen euklidischen Bewegungen aus der Essentiellen Matrix und 3D-Rekonstruktion der Szene
+%% Extraktion der moeglichen euklidischen Bewegungen aus der Essentiellen Matrix und 3D-Rekonstruktion der Szene
 [T1,R1,T2,R2] = TR_aus_E(E);
 [T,R,lambdas,P1] = rekonstruktion(T1,T2,R1,R2,Korrespondenzen_robust,K);
 
-%% Berechnung des mittleren R�ckprojektionsfehlers auf der Bildebene von Kamera 2
+%% Berechnung des mittleren Rueckprojektionsfehlers auf der Bildebene von Kamera 2
 % repro_error = rueckprojektion(Korrespondenzen_robust, P1, IGray2, T, R, K);
 
 
