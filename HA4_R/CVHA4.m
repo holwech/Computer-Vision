@@ -27,13 +27,13 @@ Merkmale2 = harris_detektor(IGray2,'segment_length',9,'k',0.05,'min_dist',80,'N'
 tic;
 Korrespondenzen = punkt_korrespondenzen(IGray1,IGray2,Merkmale1,Merkmale2,'window_length',25,'min_corr',0.9,'do_plot',false);
 zeit_korrespondenzen = toc;
-disp(['Es wurden ' num2str(size(Korrespondenzen,2)) ' Korrespondenzpunktpaare in ' num2str(zeit_korrespondenzen) 's gefunden.'])
+%disp(['Es wurden ' num2str(size(Korrespondenzen,2)) ' Korrespondenzpunktpaare in ' num2str(zeit_korrespondenzen) 's gefunden.'])
 
 
 
 %%  Finde robuste Korrespondenzpunktpaare mit Hilfe des RANSAC-Algorithmus
 Korrespondenzen_robust = F_ransac(Korrespondenzen,'tolerance',0.015);
-disp(['Es wurden ' num2str(size(Korrespondenzen_robust,2)) ' robuste Korrespondenzpunktpaare mittels RanSaC bestimmt.'])
+%disp(['Es wurden ' num2str(size(Korrespondenzen_robust,2)) ' robuste Korrespondenzpunktpaare mittels RanSaC bestimmt.'])
 
 % % Zeige die robusten Korrespondenzpunktpaare
 % figure('name', 'Punkt-Korrespondenzen nach RANSAC');
@@ -56,7 +56,7 @@ disp(['Es wurden ' num2str(size(Korrespondenzen_robust,2)) ' robuste Korresponde
 %% Berechne die Essentielle Matrix
 load('K.mat');
 E = achtpunktalgorithmus(Korrespondenzen_robust,K);
-disp(E);
+%disp(E);
 
 %% Extraktion der moeglichen euklidischen Bewegungen aus der Essentiellen Matrix und 3D-Rekonstruktion der Szene
 [T1,R1,T2,R2] = TR_aus_E(E);
