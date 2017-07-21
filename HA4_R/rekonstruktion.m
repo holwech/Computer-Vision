@@ -50,6 +50,25 @@ for i = 1:4
     end
 end
 
+
+% counter = [zeros(1,4)];
+% for set = 1:4
+%     for i = 1:n
+%         if(lambdas(i, set) > 0 && lambdas_inv(i, set) > 0)
+%             counter(set) = counter(set) + 1;
+%         end
+%     end
+% end
+% 
+% index = 1;
+% value = 0;
+% for set = 1:4
+%     if(counter(set) > value)
+%         index = set;
+%         value = counter(set);
+%     end
+% end
+    
 R = R_cell{index};
 T = T_cell{index};
 % reconstruction of P
