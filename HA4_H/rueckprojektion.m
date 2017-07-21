@@ -43,7 +43,12 @@ hold on;
 plot(x2_est(1,:), x2_est(2,:), '*r');
 %Plot KPs
 plot(x2(1,:), x2(2,:), '*g');
+for i=1:n
+    a1 = [x2_est(1,i), x2(1,i)];
+    a2 = [x2_est(2,i), x2(2,i)];
+    line(a1,a2);
+end
 title('Green points are the KPs, and red points are the projected points');
-
+hold off
 
 end

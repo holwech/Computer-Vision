@@ -104,28 +104,30 @@ P1 = [P1(:,:); ones(1,n)];
 
 close all
 %% 3D Plot w.r.t cameraframe 1
+% figure;
+% %Change coordinates for plot so it looks nicer with respect to 
+% %the way matlab plots it
+% %Axis change: z_camerea = x_matlab, y_camera = -y_matlab
+% %To achieve this we rotate 90deg about x and 90deg about z
+% Rx = [1 0 0; 0 0 -1; 0 1 0]; %Rotate 90deg about x-axis
+% Rz = [0 -1 0; 1 0 0; 0 0 1]; %Rotate 90deg about z-axis
+% M = Rx*Rz; % x_camera_coord = M*x_plot_coord, M is the change of basis
+% %This means that x_plot_coord = M'*x_camera_coord
+% P_plot = M'*P1(1:3,:);
+% scatter3(P_plot(1,:),P_plot(2,:),P_plot(3,:),'bo');
+% hold on
+% O = -R'*T; % coordinates of camera 2 in coordinate system 1
+% O_plot = M'*O;
+% scatter3(O_plot(1),O_plot(2),O_plot(3),'rd');
+% scatter3(0,0,0,'rs');
+% 
+% xlabel('x') % x-axis label
+% ylabel('y') % y-axis label
+% zlabel('z') % z-axis label
+% 
+% hold off;
 figure;
-%Change coordinates for plot so it looks nicer with respect to 
-%the way matlab plots it
-%Axis change: z_camerea = x_matlab, y_camera = -y_matlab
-%To achieve this we rotate 90deg about x and 90deg about z
-Rx = [1 0 0; 0 0 -1; 0 1 0]; %Rotate 90deg about x-axis
-Rz = [0 -1 0; 1 0 0; 0 0 1]; %Rotate 90deg about z-axis
-M = Rx*Rz; % x_camera_coord = M*x_plot_coord, M is the change of basis
-%This means that x_plot_coord = M'*x_camera_coord
-P_plot = M'*P1(1:3,:);
-scatter3(P_plot(1,:),P_plot(2,:),P_plot(3,:),'bo');
-hold on
-O = -R'*T; % coordinates of camera 2 in coordinate system 1
-O_plot = M'*O;
-scatter3(O_plot(1),O_plot(2),O_plot(3),'rd');
-scatter3(0,0,0,'rs');
-
-xlabel('x') % x-axis label
-ylabel('y') % y-axis label
-zlabel('z') % z-axis label
-
-hold off;
+plot(P1, R, T);
 
 %% 3D plot w.r.t cameraframe 2
 % figure;
@@ -164,4 +166,19 @@ function [sm] = skew(vec)
 sm = [0 -vec(3) vec(2);
     vec(3) 0 -vec(1);
     -vec(2) vec(1) 0];
- end
+end
+ 
+function plot(P1,R,T)
+    scatter3(P1(1,:),P1(2,:),P1(3,:),'bo');
+    hold on
+    O = -R'*T; % coordinates of camera 2 in coordinate system 1
+    plotCamera('Location',[O(1),O(2),O(3)],'Color',[1,0,0],'Orientation',R, 'Size', 0.2)
+    plotCamera('Location',[0,0,0],'Color',[1,0,0], 'Size', 0.2)
+    xlabel('X');
+    ylabel('Y');
+    zlabel('Z');
+    grid on
+    axis equal
+    rotate3d
+    hold off
+end

@@ -35,21 +35,21 @@ Korrespondenzen_robust = F_ransac(Korrespondenzen,'tolerance',0.015);
 disp(['Es wurden ' num2str(size(Korrespondenzen_robust,2)) ' robuste Korrespondenzpunktpaare mittels RanSaC bestimmt.'])
 
 % Zeige die robusten Korrespondenzpunktpaare
-figure('name', 'Punkt-Korrespondenzen nach RANSAC');
-imshow(uint8(IGray1))
-hold on
-plot(Korrespondenzen_robust(1,:),Korrespondenzen_robust(2,:),'r*')
-imshow(uint8(IGray2))
-alpha(0.5);
-hold on
-plot(Korrespondenzen_robust(3,:),Korrespondenzen_robust(4,:),'g*')
-for i=1:size(Korrespondenzen_robust,2)
-    hold on
-    x_1 = [Korrespondenzen_robust(1,i), Korrespondenzen_robust(3,i)];
-    x_2 = [Korrespondenzen_robust(2,i), Korrespondenzen_robust(4,i)];
-    line(x_1,x_2);
-end
-hold off
+% figure('name', 'Punkt-Korrespondenzen nach RANSAC');
+% imshow(uint8(IGray1))
+% hold on
+% plot(Korrespondenzen_robust(1,:),Korrespondenzen_robust(2,:),'r*')
+% imshow(uint8(IGray2))
+% alpha(0.5);
+% hold on
+% plot(Korrespondenzen_robust(3,:),Korrespondenzen_robust(4,:),'g*')
+% for i=1:size(Korrespondenzen_robust,2)
+%     hold on
+%     x_1 = [Korrespondenzen_robust(1,i), Korrespondenzen_robust(3,i)];
+%     x_2 = [Korrespondenzen_robust(2,i), Korrespondenzen_robust(4,i)];
+%     line(x_1,x_2);
+% end
+% hold off
 
 
 %% Berechne die Essentielle Matrix
